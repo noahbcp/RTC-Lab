@@ -3,4 +3,6 @@
 .RData
 .Ruserdata
 *.csv
-.Rproj
+*.Rproj
+.DS_Store
+TRUPATH Analysis.Rproj
