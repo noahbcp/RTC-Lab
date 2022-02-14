@@ -26,14 +26,27 @@ view(data)
 pos_row <- as.integer(readline(prompt = 'Enter the row # of well A1: '))
 pos_col <- as.integer(readline(prompt = 'Enter the column # of well A1: '))
 cycles <- as.integer(readline(prompt = 'Enter how many cycles were run: '))
-i = 0
+## rawdata is a list that holds n (equal to cycle) lists (i.e. list of lists). 
+## Each sublist includes one timepoints lumi & fluor data
+rawdata <- list(1:14)
+## Loop to fetch and sort data
+i <- 1
     while (i <= cycles){
-        ## Luminescence & Fluor at the same timepoint have one empty line between whilst
-        ## each timepoint is separated by a double line. Hence, the ugly maths.
-        print(data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 11))])
-        print(data[((pos_row + 11):((pos_row + 11) + 7)), (pos_col:(pos_col + 11))])
+        ## In csv, lumi & fluor at the same timepoint have one empty line between whilst each timepoint is separated by a double line.
+        lumi_raw <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 11))] %>%
+            replace(is.na(.), 0) %>%
+            unname()
+        fluor_raw <- data[((pos_row + 11):((pos_row + 11) + 7)), (pos_col:(pos_col + 11))] %>%
+            replace(is.na(.), 0) %>%
+            unname()
+        rawdata_sub <- list(lumi_raw, fluor_raw)
+        rawdata[[i]] <- rawdata_sub
         pos_row <- (pos_row + 23)
         i <- (i + 1)
     }
-        
+## Loop to calculate BRET2 ratio
+i <- 1
+    while (i <= cycles){
+        bret2 <- (rawdata)
+    }
 }
