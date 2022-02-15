@@ -81,6 +81,8 @@ cat(greenlight('BRET2 ratios calculation complete.'))
 bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
     if (bl_prompt == 'Y') {
         bl_start <- as.integer(readline(prompt = 'What timepoint should baseline start?: '))
+            ## Failsafe if user inputs 0 as the baseline timepoint
+            if (bl_start == 0) {bl_start <- 1}
         bl_end <- as.integer(readline(prompt = 'What timepoint should baseline end?: '))
         bl_list <- bret2[bl_start:bl_end]
         i <- bl_start
