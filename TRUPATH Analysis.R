@@ -23,6 +23,9 @@ while (length(data_path_files) == 0) {
 print(data_path_files)
 file_prompt <- as.integer(readline(prompt = 'Which file? (Enter the corresponding number): '))
 data_path <- unlist(data_path_files[file_prompt])
+## Suppress error message
+options(readr.show_col_types = FALSE)
+## Read csv
 data <- read_csv(data_path, col_names = FALSE)
 ## Open data so user can check well position
 View(data)
