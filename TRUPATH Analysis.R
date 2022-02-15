@@ -92,6 +92,7 @@ bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
             i <- (i + 1)
         }
     }
+## Block to allow user to review data prior to saving
 view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>% toupper()
     if (view_prompt == 'Y') {
         if (bl_prompt == 'Y') {
@@ -101,18 +102,20 @@ view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>%
         if (cycles >= 20) {
             cat(crayon::red(crayon::bold('This will print a lot of data!')))
             warn_prompt <- readline(prompt =  'Continue? (Y/N): ') %>% toupper()
+        } else warn_prompt <- 'Y'
+        if (warn_prompt == 'Y' & bl_prompt2 == 'Y') {
+            i <- 1
+            ## warn prompt changed to 'N' to prevent non-normalised data being printed too
+            warn_prompt <- 'N'
+            while (i <= cycles) {
+                View(bl_bret2[[i]][1:8, 1:12])
+                i <- (i + 1)
+            }
         }
         if (warn_prompt == 'Y') {
             i <- 1
             while (i <= cycles) {
                 View(bret2[[i]][1:8, 1:12])
-                i <- (i + 1)
-            }
-        }
-        if (warn_prompt == 'Y' & bl_prompt2 == 'Y') {
-            i <- 1
-            while (i <= cycles) {
-                View(bl_bret2[[i]][1:8, 1:12])
                 i <- (i + 1)
             }
         }
