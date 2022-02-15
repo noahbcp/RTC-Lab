@@ -78,7 +78,7 @@ bret2 <- list(1:cycles)
 cat(greenlight('BRET2 ratios calculation complete.'))
 ## Baseline correction
 ## Wells are corrected to the respective well mean of a given set of timepoints
-bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
+bl_prompt <- readline(prompt = 'Normalise data to a baseline? (Y/N): ') %>% toupper()
     if (bl_prompt == 'Y') {
         bl_start <- as.integer(readline(prompt = 'What timepoint should baseline start?: '))
             ## Failsafe if user inputs 0 as the baseline timepoint
