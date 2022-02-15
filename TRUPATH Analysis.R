@@ -10,19 +10,23 @@ tools_req <- require(tools)
 crayon_req <- require(crayon)
     if (crayon_req == FALSE) {install.packages('crayon')}
     library(crayon)
+hablar_req <- require(hablar)
+    if(hablar_req == FALSE) {install.packages('hablar')}
+    library(hablar)
 
 ## Parses MARS exports (after saving as .csv) into tibbles
-data <- as.character(readline(prompt = 'Enter the pathname of your data in csv format: '))
-format_check <- file_ext(data)
+data_path <- as.character(readline(prompt = 'Enter the pathname of your data in csv format: '))
+format_check <- file_ext(data_path)
     if (format_check != 'csv') {
         while (format_check != 'csv') {
             if (format_check == 'xlsx') {cat(red(bold("That's an Excel file! I need a csv.")))}
             data <- readline(prompt = 'Enter the pathname of your data in csv format: ')
-            format_check <- file_ext(data)
+            format_check <- file_ext(data_path)
         }
     }
-data <- read_csv(data)
-view(data)
+data <- read_csv(data_path, col_names = FALSE)
+## Opens data so user can check well position
+View(data)
 pos_row <- as.integer(readline(prompt = 'Enter the row # of well A1: '))
 pos_col <- as.integer(readline(prompt = 'Enter the column # of well A1: '))
 cycles <- as.integer(readline(prompt = 'Enter how many cycles were run: '))
@@ -32,7 +36,8 @@ rawdata <- list(1:cycles)
 ## Loop to fetch and sort data
 i <- 1
     while (i <= cycles){
-        ## In csv, lumi & fluor at the same timepoint have one empty line between whilst each timepoint is separated by a double line.
+        ## In csv, lumi & fluor at the same timepoint have one empty line between 
+        ## whilst each timepoint is separated by a double line.
         lumi_raw <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 11))] %>%
             replace(is.na(.), 0)
         lumi_names <- colnames(lumi_raw)
@@ -52,12 +57,16 @@ i <- 1
         pos_row <- (pos_row + 23)
         i <- (i + 1)
     }
-## Loop to calculate BRET2 ratio (GFP2 [515 nm] emissions divided by RLuc8 [410 nm]) at each timepoint and feed it into the list `bret2`
+## Loop to calculate BRET2 ratio (GFP2 [515 nm] emissions divided by RLuc8 [410 nm]) 
+## at each timepoint and feed it into the list `bret2` at position i
 i <- 1
 bret2 <- list(1:cycles)
     while (i <= cycles){
-        ## Pulls data from each sublist within the rawdata list, then unlists it and converts it to a matrix to allow binary operators
-        bret2[i] <- tibble(matrix(unlist(rawdata[[i]][1]), nrow = 8, ncol =12) / matrix(unlist(rawdata[[i]][2]), nrow = 8, ncol = 12))
+        ## Pulls data from each sublist within the rawdata list, then unlists it 
+        ## and converts it to a matrix to allow binary operators
+        fluor_raw <- matrix(unlist(rawdata[[i]][1]), nrow = 8, ncol =12)
+        lumi_raw <- matrix(unlist(rawdata[[i]][2]), nrow = 8, ncol = 12)
+        bret2[i] <- tibble(fluor_raw / lumi_raw)
         i <- (i + 1)
     }
 }
