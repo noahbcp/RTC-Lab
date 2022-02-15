@@ -75,6 +75,7 @@ bret2 <- list(1:cycles)
         bret2[i] <- tibble(fluor_raw / lumi_raw)
         i <- (i + 1)
     }
+cat(greenlight('BRET2 ratios calculation complete.'))
 ## Baseline correction
 ## Wells are corrected to the respective well mean of a given set of timepoints
 bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
@@ -100,6 +101,7 @@ bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
             bl_bret2[i] <- (matrix(unlist(bret2[i]), nrow = 8, ncol = 12) / baseline) %>% tibble()
             i <- (i + 1)
         }
+        cat(greenlight('Baseline correction complete.'))
     }
 ## Allow user to review data prior to saving
 view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>% toupper()
