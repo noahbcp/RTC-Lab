@@ -75,7 +75,9 @@ bret2 <- list(1:cycles)
         bret2[i] <- tibble(fluor_raw / lumi_raw)
         i <- (i + 1)
     }
-cat(greenlight('BRET2 ratios calculation complete.'))
+if (length(bret2) == cycles) {
+    cat(greenlight('BRET2 ratios calculated succesfully.'))
+    } else cat(alert('BRET2 calculations failed!'))
 ## Baseline correction
 ## Wells are corrected to the respective well mean of a given set of timepoints
 bl_prompt <- readline(prompt = 'Normalise data to a baseline? (Y/N): ') %>% toupper()
@@ -141,10 +143,33 @@ save_prompt <- readline(prompt = 'Do you want to export your data? (Y/N): ') %>%
         if (save_prompt2 == 'N') {
             dest_path <- readline(prompt = 'Enter pathname of destination folder: ')
         } else dest_path <- data_path_folder
+        ## Handles export of BRET2 data
         save_path <- str_glue(str_remove(data_path, '.csv'), '_bret2.csv')
+        ## Handles cases where BRET2 files are already in destination
+        overwrite <- 'N'
+        while ((save_path %in% list_files_with_exts(dest_path, exts = 'csv') && overwrite == 'N')) {
+            cat(alert('Processed file(s) with the same name already exist in that folder!'))
+            overwrite <- readline(prompt = 'Overwrite files? (Y/N): ') %>% toupper()
+            if (overwrite == 'N') {
+                dest_path <- readline(prompt = 'Enter a new pathname of destination folder: ') %>% file.path()
+                save_path <- str_glue(str_remove(data_path, '.csv'), '_bret2.csv')
+            } else
+                write.csv(bret2, file = save_path)
+        }
         write.csv(bret2, file = save_path)
+        ## Handles export of baseline corrected BRET2 data
         if (bl_prompt == 'Y') {
             bl_save_path <- str_glue(str_remove(data_path, '.csv'), '_baseline_corrected_bret2.csv')
+            ## Handles cases where baseline corrected BRET2 files are already in destination
+            while ((bl_save_path %in% list_files_with_exts(dest_path, exts = 'csv')) && overwrite == 'N') {
+                cat(alert('Processed file(s) with the same name already exist in that folder!'))
+                overwrite <- readline(prompt = 'Overwrite files? (Y/N): ') %>% toupper()
+                if (overwrite == 'N') {
+                    dest_path <- readline(prompt = 'Enter a new pathname of destination folder: ') %>% file.path()
+                    bl_save_path <- str_glue(str_remove(data_path, '.csv'), '_baseline_corrected_bret2.csv')
+                } else 
+                    write.csv(bl_bret2, file = bl_save_path)
+            }
             write.csv(bl_bret2, file = bl_save_path)
         }
         save_check <- list_files_with_exts(dest_path, exts = 'csv')
