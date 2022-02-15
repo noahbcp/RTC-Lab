@@ -16,7 +16,7 @@ data_path <- as.character(readline(prompt = 'Enter the pathname of your data in 
 format_check <- file_ext(data_path)
     if (format_check != 'csv') {
         while (format_check != 'csv') {
-            if (format_check == 'xlsx') {cat(red(bold("That's an Excel file! I need a csv.")))}
+            if (format_check == 'xlsx') {cat(crayon::red(crayon::bold("That's an Excel file! I need a csv.")))}
             data <- readline(prompt = 'Enter the pathname of your data in csv format: ')
             format_check <- file_ext(data_path)
         }
