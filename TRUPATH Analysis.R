@@ -16,7 +16,7 @@ alert <- crayon::combine_styles('bold', 'red')
 greenlight <- crayon::combine_styles('bold', 'green')
 
 ## Select directory to look for .csv
-data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
+data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data folder: ')) %>% file.path()
 data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv')
 while (length(data_path_files) == 0) {
     cat(alert('There are no `.csv` files in that folder.'))
