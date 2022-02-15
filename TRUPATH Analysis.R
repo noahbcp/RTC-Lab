@@ -13,11 +13,11 @@ hablar_req <- require(hablar)
 
 ## Select directory to look for .csv
 data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
-data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv') %>% list()
+data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv')
 while (length(data_path_files) == 0) {
     cat(crayon::red(crayon::bold('There are no `.csv` files in that folder.')))
     data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
-    data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv') %>% list()
+    data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv')
 }
 ## Select csv file to pull data from
 print(data_path_files)
