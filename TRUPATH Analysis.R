@@ -7,9 +7,6 @@ tidyverse_req <- require(tidyverse)
 tools_req <- require(tools) 
     if (tools_req == FALSE) {install.packages('tools')} 
     library(tools)
-crayon_req <- require(crayon)
-    if (crayon_req == FALSE) {install.packages('crayon')}
-    library(crayon)
 hablar_req <- require(hablar)
     if(hablar_req == FALSE) {install.packages('hablar')}
     library(hablar)
