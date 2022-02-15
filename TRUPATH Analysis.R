@@ -11,18 +11,20 @@ hablar_req <- require(hablar)
     if(hablar_req == FALSE) {install.packages('hablar')}
     library(hablar)
 
-## Parses MARS exports (after saving as .csv) into tibbles
-data_path <- as.character(readline(prompt = 'Enter the pathname of your data in csv format: '))
-format_check <- file_ext(data_path)
-    if (format_check != 'csv') {
-        while (format_check != 'csv') {
-            if (format_check == 'xlsx') {cat(crayon::red(crayon::bold("That's an Excel file! I need a csv.")))}
-            data <- readline(prompt = 'Enter the pathname of your data in csv format: ')
-            format_check <- file_ext(data_path)
-        }
-    }
+## Select directory to look for .csv
+data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
+data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv') %>% list()
+while (length(data_path_files) == 0) {
+    cat(crayon::red(crayon::bold('There are no `.csv` files in that folder.')))
+    data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
+    data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv') %>% list()
+}
+## Select csv file to pull data from
+print(data_path_files)
+file_prompt <- as.integer(readline(prompt = 'Which file? (Enter the corresponding number): '))
+data_path <- unlist(data_path_files[file_prompt])
 data <- read_csv(data_path, col_names = FALSE)
-## Opens data so user can check well position
+## Open data so user can check well position
 View(data)
 pos_row <- as.integer(readline(prompt = 'Enter the row # of well A1: '))
 pos_col <- as.integer(readline(prompt = 'Enter the column # of well A1: '))
@@ -92,7 +94,7 @@ bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
             i <- (i + 1)
         }
     }
-## Block to allow user to review data prior to saving
+## Allow user to review data prior to saving
 view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>% toupper()
     if (view_prompt == 'Y') {
         if (bl_prompt == 'Y') {
@@ -120,4 +122,14 @@ view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>%
             }
         }
     }
+## Export
+save_prompt <- readline(prompt = 'Do you want to export your data? (Y/N): ') %>% toupper()
+    if (save_prompt == 'Y') {
+        dest_path <- 
+        save_prompt2 <- readline(prompt = 'Export to same folder as input? (Y/N): ') %>% toupper()
+        if (save_prompt2 == 'N') {
+            dest_path <- readline(prompt = 'Enter pathname of destination folder: ')
+        } else dest_path <- data_path_folder
+    }
+readline('Cya!')
 }
