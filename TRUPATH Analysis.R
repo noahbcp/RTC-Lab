@@ -61,9 +61,34 @@ bret2 <- list(1:cycles)
     while (i <= cycles){
         ## Pulls data from each sublist within the rawdata list, then unlists it 
         ## and converts it to a matrix to allow binary operators
-        fluor_raw <- matrix(unlist(rawdata[[i]][1]), nrow = 8, ncol =12)
+        fluor_raw <- matrix(unlist(rawdata[[i]][1]), nrow = 8, ncol = 12)
         lumi_raw <- matrix(unlist(rawdata[[i]][2]), nrow = 8, ncol = 12)
         bret2[i] <- tibble(fluor_raw / lumi_raw)
         i <- (i + 1)
     }
+## Baseline correction
+bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
+    if (bl_prompt == 'Y') {
+        bl_start <- as.integer(readline(prompt = 'What timepoint should baseline start?: '))
+        bl_end <- as.integer(readline(prompt = 'What timepoint should baseline end?: '))
+        bl_list <- bret2[bl_start:bl_end]
+        i <- bl_start
+        ## Creates an empty matrix `bl_summed`
+        bl_summed <- matrix(nrow = 8, ncol = 12) %>% replace(is.na(.), 0)
+        ## Loop to fill `bl_summed` with sums of baseline timepoints
+        ## Had to do this as `mean()` required too much fudging
+        while (i <= bl_end) {
+            bl_summed <- bl_summed + matrix(unlist(bl_list[i]), nrow = 8, ncol = 12)
+            i <- i + 1
+        }
+        ## `bl_summed` divided by the number of timepoints to give the mean baseline for each well
+        baseline <- (bl_summed / length(bl_start:bl_end))
+        ## Loop to give baseline corrected bret2
+        i <- 1
+        bl_bret2 <- list(1:cycles)
+        while (i <= cycles){
+            bl_bret2[i] <- (matrix(unlist(bret2[i]), nrow = 8, ncol = 12) / baseline) %>% tibble()
+            i <- (i + 1)
+        }
+    }   
 }
