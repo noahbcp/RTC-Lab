@@ -52,7 +52,7 @@ i <- 1
         pos_row <- (pos_row + 23)
         i <- (i + 1)
     }
-## Loop to calculate BRET2 ratio at each timepoint and feed it into the list `bret2`
+## Loop to calculate BRET2 ratio (GFP2 [515 nm] emissions divided by RLuc8 [410 nm]) at each timepoint and feed it into the list `bret2`
 i <- 1
 bret2 <- list(1:cycles)
     while (i <= cycles){
