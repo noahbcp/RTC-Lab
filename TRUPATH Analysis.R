@@ -91,5 +91,30 @@ bl_prompt <- readline(prompt = 'Normalise data? (Y/N): ') %>% toupper()
             bl_bret2[i] <- (matrix(unlist(bret2[i]), nrow = 8, ncol = 12) / baseline) %>% tibble()
             i <- (i + 1)
         }
-    }   
+    }
+view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>% toupper()
+    if (view_prompt == 'Y') {
+        if (bl_prompt == 'Y') {
+            bl_prompt2 <- readline(prompt = 'Do you want to review baseline corrected? (Y/N): ') %>% toupper()
+        }
+        warn_prompt <- 'N'
+        if (cycles >= 20) {
+            cat(crayon::red(crayon::bold('This will print a lot of data!')))
+            warn_prompt <- readline(prompt =  'Continue? (Y/N): ') %>% toupper()
+        }
+        if (warn_prompt == 'Y') {
+            i <- 1
+            while (i <= cycles) {
+                View(bret2[[i]][1:8, 1:12])
+                i <- (i + 1)
+            }
+        }
+        if (warn_prompt == 'Y' & bl_prompt2 == 'Y') {
+            i <- 1
+            while (i <= cycles) {
+                View(bl_bret2[[i]][1:8, 1:12])
+                i <- (i + 1)
+            }
+        }
+    }
 }
