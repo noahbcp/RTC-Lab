@@ -11,11 +11,15 @@ hablar_req <- require(hablar)
     if(hablar_req == FALSE) {install.packages('hablar')}
     library(hablar)
 
+## Set crayon styles
+alert <- crayon::combine_styles('bold', 'red')
+greenlight <- crayon::combine_styles('bold', 'green')
+
 ## Select directory to look for .csv
 data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
 data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv')
 while (length(data_path_files) == 0) {
-    cat(crayon::red(crayon::bold('There are no `.csv` files in that folder.')))
+    cat(alert('There are no `.csv` files in that folder.'))
     data_path_folder <- as.character(readline(prompt = 'Enter the pathname of your data: ')) %>% file.path()
     data_path_files <- list_files_with_exts(data_path_folder, exts = 'csv')
 }
@@ -105,7 +109,7 @@ view_prompt <- readline(prompt = 'Do you want to review your data? (Y/N): ') %>%
         }
         warn_prompt <- 'N'
         if (cycles >= 20) {
-            cat(crayon::red(crayon::bold('This will print a lot of data!')))
+            cat(alert('This will print a lot of data!'))
             warn_prompt <- readline(prompt =  'Continue? (Y/N): ') %>% toupper()
         } else warn_prompt <- 'Y'
         if (warn_prompt == 'Y' & bl_prompt2 == 'Y') {
@@ -133,6 +137,23 @@ save_prompt <- readline(prompt = 'Do you want to export your data? (Y/N): ') %>%
         if (save_prompt2 == 'N') {
             dest_path <- readline(prompt = 'Enter pathname of destination folder: ')
         } else dest_path <- data_path_folder
+        save_path <- str_glue(str_remove(data_path, '.csv'), '_bret2.csv')
+        write.csv(bret2, file = save_path)
+        if (bl_prompt == 'Y') {
+            bl_save_path <- str_glue(str_remove(data_path, '.csv'), '_baseline_corrected_bret2.csv')
+            write.csv(bl_bret2, file = bl_save_path)
+        }
+        save_check <- list_files_with_exts(dest_path, exts = 'csv')
+        if (bl_prompt == 'Y') {
+            if (bl_save_path %in% save_check && save_path %in% save_check) {
+                cat(greenlight('Export succesful!'))
+            } else
+                cat(alert('Export failed.'))
+            
+        } else
+            if (save_path %in% save_check) {
+                cat(greenlight('Export succesful!'))
+            } else
+                cat(alert('Export failed.'))
     }
-readline('Cya!')
 }
