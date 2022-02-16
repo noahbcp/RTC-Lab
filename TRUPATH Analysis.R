@@ -82,10 +82,19 @@ if (length(bret2) == cycles) {
 ## Wells are corrected to the respective well mean of a given set of timepoints
 bl_prompt <- readline(prompt = 'Normalise data to a baseline? (Y/N): ') %>% toupper()
     if (bl_prompt == 'Y') {
-        bl_start <- as.integer(readline(prompt = 'What timepoint should baseline start?: '))
-            ## Failsafe if user inputs 0 as the baseline timepoint
-            if (bl_start == 0) {bl_start <- 1}
-        bl_end <- as.integer(readline(prompt = 'What timepoint should baseline end?: '))
+        bl_start <- readline(prompt = 'What timepoint should baseline start?: ')
+        while (bl_start %in% as.character(c(0:cycles)) == FALSE) {
+            cat(alert('That timepoint is not in your dataset!'))
+            bl_start <- readline(prompt = 'What timepoint should baseline start?: ')
+        }
+        bl_start <- as.integer(bl_start)
+        if (bl_start == 0) {bl_start <- 1}
+        bl_end <- readline(prompt = 'What timepoint should baseline end?: ')
+        while (bl_end %in% as.character(c(bl_start:cycles)) == FALSE) {
+            cat(alert('That timepoint is not in your dataset!'))
+            bl_end <- readline(prompt = 'What timepoint shoud baseline end?: ')
+        }
+        bl_end < as.integer(bl_end)
         bl_list <- bret2[bl_start:bl_end]
         i <- bl_start
         ## Creates an empty matrix `bl_summed`
