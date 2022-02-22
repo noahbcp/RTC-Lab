@@ -44,15 +44,13 @@ i <- 1
     while (i <= cycles){
         ## In csv, lumi & fluor at the same timepoint have one empty line between 
         ## whilst each timepoint is separated by a double line.
-        lumi_raw <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 11))] %>%
-            replace(is.na(.), 0)
+        lumi_raw <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 11))]
         lumi_names <- colnames(lumi_raw)
         lumi_raw <- lumi_raw %>% 
             data.frame() %>%
             convert(int(all_of(lumi_names))) %>%
             unname()
-        fluor_raw <- data[((pos_row + 11):((pos_row + 11) + 7)), (pos_col:(pos_col + 11))] %>%
-            replace(is.na(.), 0)
+        fluor_raw <- data[((pos_row + 11):((pos_row + 11) + 7)), (pos_col:(pos_col + 11))]
         fluor_names <- colnames(fluor_raw)
         fluor_raw <- fluor_raw %>% 
             data.frame() %>%
