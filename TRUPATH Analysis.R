@@ -43,7 +43,7 @@ rawdata <- list(1:cycles)
 i <- 1
     while (i <= cycles){
         ## In csv, lumi & fluor at the same timepoint have one empty line between 
-        ## whilst each timepoint is separated by a double line.
+        ## whilst each timepoint is separated by two empty lines.
         lumi_raw <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 11))]
         lumi_names <- colnames(lumi_raw)
         lumi_raw <- lumi_raw %>% 
