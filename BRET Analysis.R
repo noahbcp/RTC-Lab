@@ -25,30 +25,71 @@ while (length(data_path_files) == 0) {
 }
 ## Select csv file to pull data from
 print(data_path_files)
-file_prompt <- as.integer(readline(prompt = 'Which file? (Enter the corresponding number): '))
-data_path <- unlist(data_path_files[file_prompt])
-## Suppress error message
-options(readr.show_col_types = FALSE)
-## Read csv
-data <- read_csv(data_path, col_names = FALSE)
-## Open data so user can check well position
-View(data)
-pos_row <- as.integer(readline(prompt = 'Row # of first well in triplicate: '))
-pos_col <- as.integer(readline(prompt = 'Col # of first well in triplcate: '))
-n_cycles <- as.integer(readline(prompt = 'Number of cycles: '))
-i <- 1
-datalist <- list(1:n_cycles)
-while (i <= n_cycles){
-    ## In csv, lumi & fluor at the same timepoint have one empty line between 
-    ## whilst each timepoint is separated by two empty lines.
-    bret <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 2))]
-    bret <- as.vector(t(bret))
-    pos_row <- (pos_row + 23)
-    datalist[[i]] <- bret
-    i <- i + 1
+if (length(data_path_files) > 1) {
+    file_prompt <- as.character(readline(prompt = 'Batch process files? (Y/N): '))
+    if (file_prompt == 'N') {
+        batch.process <- FALSE
+        file_prompt <- as.integer(readline(prompt = 'Which file should be processed? (Enter the corresponding number): '))
+    } else {
+        batch.process <- TRUE
+    }
 }
-drug <- as.character(readline(prompt = 'Drug: '))
-savepath <- paste0(data_path, '_', drug, '.csv')
-datalist <- as.data.frame(do.call(rbind, datalist))
-write_csv(datalist, savepath)
+###################
+## Batch process ##
+###################
+if (batch.process == TRUE) {
+    data_path <- unlist(data_path_files[1])
+    ## Suppress error message
+    options(readr.show_col_types = FALSE)
+    data <- read_csv(data_path, col_names = FALSE)
+    ## Open data so user can check well position
+    View(data)
+    pos_row <- as.integer(readline(prompt = 'Row # of first well in triplicate: '))
+    pos_col <- as.integer(readline(prompt = 'Col # of first well in triplcate: '))
+    n_cycles <- as.integer(readline(prompt = 'Number of cycles: '))
+    drug <- as.character(readline(prompt = 'Compound (determines filename): '))
+    n <- 1
+    while (n <= length(data_path_files)) {
+        data_path <- unlist(data_path_files[n])
+        n <- n + 1
+        i <- 1
+        datalist <- list(1:n_cycles)
+        while (i <= n_cycles) {
+            bret <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 2))]
+            bret <- as.vector(t(bret))
+            pos_row <- (pos_row + 23)
+            datalist[[i]] <- bret
+            i <- i + 1
+        }
+        savepath <- paste0(data_path, '_', drug, '.csv')
+        datalist <- as.data.frame(do.call(rbind, datalist))
+        write_csv(datalist, savepath)
+    }
+} else {
+#########################
+## Single file process ##
+#########################
+    data_path <- unlist(data_path_files[file_prompt])
+    ## Suppress error message
+    options(readr.show_col_types = FALSE)
+    data <- read_csv(data_path, col_names = FALSE)
+    ## Open data so user can check well position
+    View(data)
+    pos_row <- as.integer(readline(prompt = 'Row # of first well in triplicate: '))
+    pos_col <- as.integer(readline(prompt = 'Col # of first well in triplcate: '))
+    n_cycles <- as.integer(readline(prompt = 'Number of cycles: '))
+    i <- 1
+    datalist <- list(1:n_cycles)
+    while (i <= n_cycles){
+        bret <- data[(pos_row:(pos_row + 7)), (pos_col:(pos_col + 2))]
+        bret <- as.vector(t(bret))
+        pos_row <- (pos_row + 23)
+        datalist[[i]] <- bret
+        i <- i + 1
+    }
+    drug <- as.character(readline(prompt = 'Drug: '))
+    savepath <- paste0(data_path, '_', drug, '.csv')
+    datalist <- as.data.frame(do.call(rbind, datalist))
+    write_csv(datalist, savepath)
+    }
 }
