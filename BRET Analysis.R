@@ -25,6 +25,8 @@ while (length(data_path_files) == 0) {
 }
 ## Select csv file to pull data from
 print(data_path_files)
+## Offer to batch process files if folder has multiple CSVs
+batch.process <- FALSE
 if (length(data_path_files) > 1) {
     file_prompt <- as.character(readline(prompt = 'Batch process files? (Y/N): '))
     if (file_prompt == 'N') {
@@ -93,3 +95,4 @@ if (batch.process == TRUE) {
     write_csv(datalist, savepath)
     }
 }
+
