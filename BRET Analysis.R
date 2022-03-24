@@ -27,7 +27,7 @@ while (length(data_path_files) == 0) {
 print(data_path_files)
 ## Offer to batch process files if folder has multiple CSVs
 batch.process <- FALSE
-if (length(data_path_files) > 1) {
+if (length(data_path_files) >= 1) {
     file_prompt <- as.character(readline(prompt = 'Batch process files? (Y/N): '))
     if (file_prompt == 'N') {
         batch.process <- FALSE
@@ -90,7 +90,7 @@ if (batch.process == TRUE) {
         i <- i + 1
     }
     drug <- as.character(readline(prompt = 'Drug: '))
-    savepath <- paste0(data_path, '_', drug, '.csv')
+    savepath <- paste0(stringr::str_replace_all(data_path, '.csv', ''), '_', drug, '_processed.csv')
     datalist <- as.data.frame(do.call(rbind, datalist))
     write_csv(datalist, savepath)
     }
