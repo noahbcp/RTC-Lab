@@ -63,7 +63,7 @@ if (batch.process == TRUE) {
             datalist[[i]] <- bret
             i <- i + 1
         }
-        savepath <- paste0(data_path, '_', drug, '.csv')
+        savepath <- paste0(stringr::str_replace_all(data_path, '.csv', ''), '_', drug, '_processed.csv')
         datalist <- as.data.frame(do.call(rbind, datalist))
         write_csv(datalist, savepath)
     }
