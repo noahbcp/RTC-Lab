@@ -28,7 +28,7 @@ print(data_path_files)
 ## Offer to batch process files if folder has multiple CSVs
 batch.process <- FALSE
 if (length(data_path_files) >= 1) {
-    file_prompt <- as.character(readline(prompt = 'Batch process files? (Y/N): '))
+    file_prompt <- toupper(as.character(readline(prompt = 'Batch process files? (Y/N): ')))
     if (file_prompt == 'N') {
         batch.process <- FALSE
         file_prompt <- as.integer(readline(prompt = 'Which file should be processed? (Enter the corresponding number): '))
