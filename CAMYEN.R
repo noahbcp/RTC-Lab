@@ -92,6 +92,6 @@ if (batch.process == FALSE) {
     #Escapes batch loop if user does not opt for batch process
     if (batch.process == TRUE) {
         batch.i <- batch.i + 1
-    } else {batch.i <- length(data_path_files)}
+    } else {batch.i <- (length(data_path_files) + 1)} #Have to increase var by length + 1 to escape batch loop
 }
 }
