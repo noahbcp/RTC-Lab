@@ -11,5 +11,6 @@ Scripts for the processing of general BRET experiment data exported by BMG Labte
 
 ## FLIPR Calcium
 For the processing of 384 well Calcium data. 
+
 Assumes the following plate layout:
 ![image](https://user-images.githubusercontent.com/98575657/170615833-00071a75-0cae-4fc7-8255-24d0318cbc0b.png)
