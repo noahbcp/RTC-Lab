@@ -27,6 +27,8 @@ while (length(data_path_files) == 0) {
 print(data_path_files)
 #Pick file
 file_prompt <- as.integer(readline(prompt = 'Which file should be processed? (Enter the corresponding number): '))
+#Ask how many cycles
+cycle_count <- as.integer(readline(prompt = 'How many cycles?: '))
 #Ask if all quadrants should be parsed at once
 batch_quadrant <- toupper(as.character(readline(prompt = 'Batch process all quadrants? (Y/N): ')))
 if (batch_quadrant == 'N') {
@@ -54,7 +56,7 @@ while(batch.i <= 4) {
         i <- i + 1
     }
     data_pos <- c(1, unlist(data_pos))
-    quadrant_data <- data[data_pos,5:615]
+    quadrant_data <- data[data_pos,5:(cycle_count + 5)] #Add 5 to cycle count to compensate for header length
     #Sort by cell line
     cell_line <- list()
     i <- 1
@@ -73,5 +75,4 @@ while(batch.i <= 4) {
         batch.i <- batch.i + 1
     } else {batch.i <- 999}
 }
-rm(list = ls())
 }
