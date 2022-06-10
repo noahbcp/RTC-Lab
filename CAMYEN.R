@@ -35,7 +35,10 @@ if (length(data_path_files) > 1) {
         file_prompt <- 1
         batch.process <- TRUE
     }
-} else {batch.process <- FALSE}
+} else {
+    batch.process <- FALSE
+    file_prompt <- 1
+    }
 #Ask user to define position of data in CSV and experiment setup
 data_path <- unlist(data_path_files[1])
 options(readr.show_col_types = FALSE) #Suppresses error message
