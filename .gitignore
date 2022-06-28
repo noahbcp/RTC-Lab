@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.lintr
 *.csv
 *.Rproj
 .DS_Store
