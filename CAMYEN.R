@@ -21,16 +21,16 @@ filehandler <- local({
     files <- c()
     list(
         fetch_files = function() {
-            files <<- list_files_with_exts(
-                file.path(
-                    readline("Enter the pathname of your data folder: ")),
-                exts = "csv")
+            files <<- readline(
+                "Enter the pathname of your data folder: ") %>%
+                file.path() %>%
+                list_files_with_exts(., "csv")
             while (length(files) == 0) {
                 cat(styles$alert("There are no `.csv` files in that location."))
-                files <<- list_files_with_exts(
-                    file.path(
-                        readline("Enter the pathname of your data folder: ")),
-                        exts = "csv")
+                files <<- readline(
+                    "Enter the pathname of your data folder: ") %>%
+                    file.path() %>%
+                    list_files_with_exts(., "csv")
             }
         },
         filepaths = function() {
@@ -43,18 +43,18 @@ filehandler <- local({
                 return(
                     cat(
                         paste0(
-                            "[", seq_along(
-                                file_basenames), "] ", file_basenames),
-                        sep = "\n"))
+                            "[", seq_along(file_basenames), "] ",
+                            file_basenames),
+                            sep = "\n"))
             } else {
                 return(file_basenames)
                 }
         },
         save_files = function(x) {
             #Creates a new directory in the parent directory
-            savepath <- file.path(
-                paste0(
-                    dirname(files[batcher$file_integer()]), "/Processed"))
+            savepath <- dirname(files[batcher$file_integer()]) %>%
+            paste0(., "/Processed") %>%
+            file.path()
             dir.create(savepath, showWarnings = FALSE)
             savepath <- file.path(
                 paste0(savepath, "/",
@@ -69,14 +69,14 @@ batcher <- local({
     list(
         offer_batch_process = function() {
             if (length(filehandler$filepaths()) > 1) {
-                batch_prompt <- toupper(
-                    as.character(
-                        readline("Batch process files? (Y/N): ")))
+                batch_prompt <- readline("Batch process files? (Y/N): ") %>%
+                    as.character() %>%
+                    toupper()
                 if (batch_prompt == "N") {
                     batch_process <<- FALSE
-                    file_int <<- as.integer(
-                        readline(
-                            "Which file should be processed?: "))
+                    file_int <<- readline(
+                        "Which file should be processed?: ") %>%
+                        as.integer()
                     cat(
                         styles$greenlight(
                             "The following file will be processed:\n"))
