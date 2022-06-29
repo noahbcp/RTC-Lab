@@ -40,17 +40,25 @@ filehandler <- local({
             file_basenames <- basename(files)
             if (silent == FALSE) {
                 cat(styles$greenlight("The following files were found:\n"))
-                print(file_basenames)
-                return(file_basenames)
+                return(
+                    cat(
+                        paste0(
+                            "[", seq_along(
+                                file_basenames), "] ", file_basenames),
+                        sep = "\n"))
             } else {
                 return(file_basenames)
                 }
         },
         save_files = function(x) {
             #Creates a new directory in the parent directory
-            savepath <- file.path(paste0(dirname(files[batcher$file_integer()]), "/Processed"))
+            savepath <- file.path(
+                paste0(
+                    dirname(files[batcher$file_integer()]), "/Processed"))
             dir.create(savepath, showWarnings = FALSE)
-            savepath <- file.path(paste0(savepath, "/", filehandler$basenames(TRUE)[batcher$file_integer()]))
+            savepath <- file.path(
+                paste0(savepath, "/",
+                       filehandler$basenames(TRUE)[batcher$file_integer()]))
             write_csv(x, savepath)
         }
     )
@@ -61,11 +69,17 @@ batcher <- local({
     list(
         offer_batch_process = function() {
             if (length(filehandler$filepaths()) > 1) {
-                batch_prompt <- toupper(as.character(readline(prompt = "Batch process files? (Y/N): ")))
+                batch_prompt <- toupper(
+                    as.character(
+                        readline("Batch process files? (Y/N): ")))
                 if (batch_prompt == "N") {
                     batch_process <<- FALSE
-                    file_int <<- as.integer(readline(prompt = "Which file should be processed? (Enter the corresponding number): "))
-                    cat(styles$greenlight("The following file will be processed:\n"))
+                    file_int <<- as.integer(
+                        readline(
+                            "Which file should be processed?: "))
+                    cat(
+                        styles$greenlight(
+                            "The following file will be processed:\n"))
                     print(basename(filehandler$filepaths()[file_int]))
                 } else {
                     batch_process <<- TRUE
@@ -82,7 +96,7 @@ batcher <- local({
         file_integer = function() {
             return(file_int)
         },
-        increment_file_integer = function(x) {
+        increment_file_integer = function() {
             file_int <<- file_int + 1
             return(file_int)
         }
@@ -118,7 +132,7 @@ datahandler <- local({
         find_triplicate = function() {
             #Gives a vector of the triplicate to be passed to `pos_col`
             #[2] is called as the first col is the plate coordinate.
-            return(which(!is.na(data[3, 1:13]))[2]) 
+            return(which(!is.na(data[3, 1:13]))[2])
         },
         row_position = function() {
             return(pos_row)
@@ -128,34 +142,37 @@ datahandler <- local({
         },
         calculate_bret = function(batch = FALSE) {
             #Loop to fetch wavelength A
-            datalist_wavelength_A <- list()
+            datalist_wavelength_a <- list()
             i <- 1
-            pos_row_A <- pos_row
-            pos_col_A <- pos_col
-            while (i <= n_cycles){
-                wavelength_A <- data[(pos_row_A:(pos_row_A + 7)), (pos_col_A:(pos_col_A + 2))]
-                wavelength_A <- as.vector(t(wavelength_A))
-                pos_row_A <- (pos_row_A + 23)
-                datalist_wavelength_A[[i]] <- as.numeric(wavelength_A)
+            pos_row_a <- pos_row
+            pos_col_a <- pos_col
+            while (i <= n_cycles) {
+                wavelength_a <- data[(pos_row_a:(pos_row_a + 7)),
+                                     (pos_col_a:(pos_col_a + 2))]
+                wavelength_a <- as.vector(t(wavelength_a))
+                pos_row_a <- (pos_row_a + 23)
+                datalist_wavelength_a[[i]] <- as.numeric(wavelength_a)
                 i <- i + 1
             }
             #Loop to fetch wavelength B
-            datalist_wavelength_B <- list()
+            datalist_wavelength_b <- list()
             i <- 1
-            pos_row_B <- pos_row
-            pos_col_B <- pos_col
-            while (i <= n_cycles){
-                wavelength_B<- data[((pos_row_B + 11):((pos_row_B + 7) + 11)), (pos_col_B:(pos_col_B + 2))]
-                wavelength_B <- as.vector(t(wavelength_B))
-                pos_row_B <- (pos_row_B + 23)
-                datalist_wavelength_B[[i]] <- as.numeric(wavelength_B)
+            pos_row_b <- pos_row
+            pos_col_b <- pos_col
+            while (i <= n_cycles) {
+                wavelength_b <- data[((pos_row_b + 11):((pos_row_b + 7) + 11)),
+                                    (pos_col_b:(pos_col_b + 2))]
+                wavelength_b <- as.vector(t(wavelength_b))
+                pos_row_b <- (pos_row_b + 23)
+                datalist_wavelength_b[[i]] <- as.numeric(wavelength_b)
                 i <- i + 1
             }
             #Calculate BRET ratio (wavelength A / wavelength B)
             datalist <- list(1:n_cycles)
             i <- 1
-            while (i <= n_cycles){
-                datalist[[i]] <- datalist_wavelength_A[[i]] / datalist_wavelength_B[[i]]
+            while (i <= n_cycles) {
+                datalist[[i]] <- (datalist_wavelength_a[[i]] /
+                                  datalist_wavelength_b[[i]])
                 i <- i + 1
             }
             datalist <- as.data.frame(do.call(rbind, datalist))
@@ -179,4 +196,4 @@ if (batcher$batch_status() == TRUE) {
 }  else {
     filehandler$save_files(datahandler$calculate_bret())
 }
-cat(styles$greenlight('Export completed!'))
+cat(styles$greenlight("Export completed!"))
