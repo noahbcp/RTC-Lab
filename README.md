@@ -9,6 +9,8 @@ Requires experiments to be completed in a 96 well format and luminescence and fl
 ## BRET / CAMYEN Analysis
 Scripts for the processing of general BRET experiment data exported by BMG Labtech's MARS software into a Graphpad Prism-friendly format.
 
+CAMYEN.R assumes that data is in a format with technical triplicates.
+
 ## FLIPR Calcium
 For the processing of 384 well Calcium data. 
 
