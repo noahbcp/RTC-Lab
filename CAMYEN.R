@@ -143,37 +143,32 @@ datahandler <- local({
         calculate_bret = function(batch = FALSE) {
             #Loop to fetch wavelength A
             datalist_wavelength_a <- list()
-            i <- 1
             pos_row_a <- pos_row
             pos_col_a <- pos_col
-            while (i <= n_cycles) {
+            for (i in 1:n_cycles) {
                 wavelength_a <- data[(pos_row_a:(pos_row_a + 7)),
                                      (pos_col_a:(pos_col_a + 2))]
                 wavelength_a <- as.vector(t(wavelength_a))
                 pos_row_a <- (pos_row_a + 23)
                 datalist_wavelength_a[[i]] <- as.numeric(wavelength_a)
-                i <- i + 1
             }
             #Loop to fetch wavelength B
             datalist_wavelength_b <- list()
-            i <- 1
             pos_row_b <- pos_row
             pos_col_b <- pos_col
-            while (i <= n_cycles) {
+            for (i in 1:n_cycles) {
                 wavelength_b <- data[((pos_row_b + 11):((pos_row_b + 7) + 11)),
                                     (pos_col_b:(pos_col_b + 2))]
                 wavelength_b <- as.vector(t(wavelength_b))
                 pos_row_b <- (pos_row_b + 23)
                 datalist_wavelength_b[[i]] <- as.numeric(wavelength_b)
-                i <- i + 1
             }
             #Calculate BRET ratio (wavelength A / wavelength B)
             datalist <- list(1:n_cycles)
             i <- 1
-            while (i <= n_cycles) {
+            for (i in 1:n_cycles) {
                 datalist[[i]] <- (datalist_wavelength_a[[i]] /
                                   datalist_wavelength_b[[i]])
-                i <- i + 1
             }
             datalist <- as.data.frame(do.call(rbind, datalist))
             return(datalist)
