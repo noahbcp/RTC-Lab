@@ -1,13 +1,13 @@
 #----Dependencies----
 if (require(tidyverse) == FALSE) {
     install.packages("tidyverse")
-    }
+}
 if (require(tools) == FALSE) {
     install.packages("tools")
-    }
+}
 if (require(hablar) == FALSE) {
     install.packages("hablar")
-    }
+}
 library(tidyverse)
 library(tools)
 library(hablar)
@@ -45,16 +45,16 @@ filehandler <- local({
                         paste0(
                             "[", seq_along(file_basenames), "] ",
                             file_basenames),
-                            sep = "\n"))
+                        sep = "\n"))
             } else {
                 return(file_basenames)
-                }
+            }
         },
         save_files = function(x) {
             #Creates a new directory in the parent directory
             savepath <- dirname(files[batcher$file_integer()]) %>%
-            paste0(., "/Processed") %>%
-            file.path()
+                paste0(., "/Processed") %>%
+                file.path()
             dir.create(savepath, showWarnings = FALSE)
             savepath <- file.path(
                 paste0(savepath, "/",
@@ -111,28 +111,34 @@ datahandler <- local({
         view_data = function(silent = FALSE) {
             data <<- read_csv(
                 filehandler$filepaths()[batcher$file_integer()],
-                col_names = c(as.character(1:13)), #Rename columns
-                skip = 14) #Skip `.csv` header
+                col_names = c(as.character(1:13))) #Rename columns
             if (silent == FALSE) {
                 View(data, filehandler$basenames(TRUE)[batcher$file_integer()])
             }
         },
         fetch_exp = function(silent = FALSE) {
             if (batcher$batch_status() == FALSE) {
-                pos_row <<- 3 #Assumes data begins in row 3.
+                pos_row <<- datahandler$find_data()
                 pos_col <<- datahandler$find_triplicate()
             } else {
-                pos_row <<- 3 #Assumes data begins in row 3.
+                pos_row <<- datahandler$find_data()
                 pos_col <<- datahandler$find_triplicate()
             }
             if (silent == FALSE) {
                 n_cycles <<- as.numeric(readline("How many cycles?: "))
             }
         },
+        find_data = function() {
+            #Finds the first row in dataset to control for when one exports
+            #without three 'Mars ID' values
+            return(
+                (which(data == "A", arr.ind = TRUE))[1]
+            )
+        },
         find_triplicate = function() {
             #Gives a vector of the triplicate to be passed to `pos_col`
             #[2] is called as the first col is the plate coordinate.
-            return(which(!is.na(data[3, 1:13]))[2])
+            return(which(!is.na(data[datahandler$find_data(), 1:13]))[2])
         },
         row_position = function() {
             return(pos_row)
@@ -158,7 +164,7 @@ datahandler <- local({
             pos_col_b <- pos_col
             for (i in 1:n_cycles) {
                 wavelength_b <- data[((pos_row_b + 11):((pos_row_b + 7) + 11)),
-                                    (pos_col_b:(pos_col_b + 2))]
+                                     (pos_col_b:(pos_col_b + 2))]
                 wavelength_b <- as.vector(t(wavelength_b))
                 pos_row_b <- (pos_row_b + 23)
                 datalist_wavelength_b[[i]] <- as.numeric(wavelength_b)
@@ -168,7 +174,7 @@ datahandler <- local({
             i <- 1
             for (i in 1:n_cycles) {
                 datalist[[i]] <- (datalist_wavelength_a[[i]] /
-                                  datalist_wavelength_b[[i]])
+                                      datalist_wavelength_b[[i]])
             }
             datalist <- as.data.frame(do.call(rbind, datalist))
             return(datalist)
