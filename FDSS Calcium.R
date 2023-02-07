@@ -1,15 +1,11 @@
 # Dependencies
 
-if (require(openxlsx) == FALSE) {
-    install.packages('openxlsx')
-}
 if (require(stringr) == FALSE) {
     install.packages('stringr')
 }
 if (require(tools) == FALSE) {
     install.packages('tools')
 }
-library(openxlsx)
 library(stringr)
 library(tools)
 
