@@ -37,7 +37,11 @@ parseTabDelimited <- function(filepath) {
 fileint <- NULL
 dir <- file.path(readline(prompt = 'Directory with `.txt` files: '))
 files <- getTxtFiles(dir)
-print(files)
+i = 1
+for (file in files) {
+    cat(paste0("[", i, "] ", basename(file), "\n"))
+    i = i + 1
+}
 batch <- toupper(readline(prompt = 'Process all files? (Y/N): '))
 if (batch == 'N') {
     fileint <- as.integer(readline(prompt = 'Which file?: '))
