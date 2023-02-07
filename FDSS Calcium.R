@@ -30,7 +30,16 @@ parseTabDelimited <- function(filepath) {
     # returns a data frame object with file contents.
     # Assumes that all input files have 7 header rows and 96 data rows.
     
-    df <- read.csv(filepath, sep = '\t', header = TRUE, skip = 7, nrows = 96)
+    .findStart <- function(filepath) {
+        
+        # Takes a filepath and returns an integer equal to the row indice 
+        # with well A1 in it. Essentially just finds the start of the 'data'.
+        
+        df <- read.csv(filepath, sep = '\t', header = TRUE, col.names = c(1:max(count.fields(filepath))))
+        start_ind <- which(df == 'A1', arr.ind = TRUE)[1]
+    }
+    
+    df <- read.csv(filepath, sep = '\t', header = FALSE, skip = .findStart(filepath), nrows = 96, check.names = FALSE)
     return(df)
 }
 
