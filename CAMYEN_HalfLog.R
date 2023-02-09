@@ -25,22 +25,34 @@ FindRows <- function(datatable, wavelength) {
         return(which(datatable$`1` == "A", arr.ind = TRUE)[c(FALSE, TRUE)])
     }
 }
-CalculateBret <- function(datatable, a_rows, b_rows) {
+CalculateBret <- function(datatable, a_rows, b_rows, where) {
     n_cycles <- length(a_rows)
     datalist_a <- list()
     for (i in 1:n_cycles) {
         row_position <- a_rows[i]
-        wavelength_a <- datatable[row_position:(row_position + 2),2:13] # Rows A-C
-        #wavelength_a <- datatable[(row_position + 3):(row_position + 5),2:13] # Rows D-F    
-        #wavelength_a <- datatable[(row_position + 6),2:13] # Row G
+        if (where = 1) {
+            wavelength_a <- datatable[row_position:(row_position + 1),2:13] # Rows A-B
+        }
+        if (where = 2) {
+            wavelength_a <- datatable[(row_position + 2):(row_position + 3),2:13] # Rows C-D
+        }
+        if (where = 3) {
+            wavelength_a <- datatable[(row_position + 4):(row_position + 5),2:13] # Rows E-F
+        }
         datalist_a[[i]] <- as.numeric(as.matrix(wavelength_a))
     }
     datalist_b <- list()
     for (i in 1:n_cycles) {
         row_position <- b_rows[i]
-        wavelength_b <- datatable[row_position:(row_position + 2),2:13] # Rows A-C
-        #wavelength_b <- datatable[(row_position + 3):(row_position + 5),2:13] # Rows D-F
-        #wavelength_b <- datatable[(row_position + 6),2:13] # Row G
+        if (where = 1) {
+            wavelength_b <- datatable[row_position:(row_position + 1),2:13] # Rows A-B
+        }
+        if (where = 2) {
+            wavelength_b <- datatable[(row_position + 2):(row_position + 3),2:13] # Rows C-D
+        }
+        if (where = 3) {
+            wavelength_b <- datatable[(row_position + 4):(row_position + 5),2:13] # Rows E-F
+        }
         datalist_b[[i]] <- as.numeric(as.matrix(wavelength_b))
     }
     # Calculate BRET ratio
@@ -60,5 +72,6 @@ ExportExcel <- function(calculated_bret_values, savepath) {
 }
 path <- GetFilepath()
 data <- ParseExcel(path)
-processed_data <- CalculateBret(data, FindRows(data, "A"), FindRows(data, "B"))
+where <- readline(prompt = "Which duplicate?: ")
+processed_data <- CalculateBret(data, FindRows(data, "A"), FindRows(data, "B"), where = where)
 ExportExcel(processed_data, path)
