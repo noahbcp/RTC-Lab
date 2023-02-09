@@ -62,10 +62,10 @@ CalculateBret <- function(datatable, a_rows, b_rows, where) {
     }
     return(calculated_bret)
 }
-ExportExcel <- function(calculated_bret_values, savepath) {
+ExportExcel <- function(calculated_bret_values, savepath, append = NULL) {
     for_export <- do.call(rbind.data.frame, calculated_bret_values)
     colnames(for_export) <- as.character(1:(dim(for_export)[2]))
-    savepath <- paste0(stringr::str_remove(savepath, ".xlsx"), "-processed.xlsx")
+    savepath <- paste0(stringr::str_remove(savepath, ".xlsx"), "_duplicate_", append, "_processed.xlsx")
     return(
         openxlsx::saveWorkbook(wb = openxlsx::buildWorkbook(for_export), file = savepath, overwrite = TRUE)
     )
@@ -74,4 +74,4 @@ path <- GetFilepath()
 data <- ParseExcel(path)
 where <- as.numeric(readline(prompt = "Which duplicate?: "))
 processed_data <- CalculateBret(data, FindRows(data, "A"), FindRows(data, "B"), where = where)
-ExportExcel(processed_data, path)
+ExportExcel(processed_data, path, append = where)
