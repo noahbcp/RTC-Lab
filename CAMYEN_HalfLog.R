@@ -30,13 +30,13 @@ CalculateBret <- function(datatable, a_rows, b_rows, where) {
     datalist_a <- list()
     for (i in 1:n_cycles) {
         row_position <- a_rows[i]
-        if (where = 1) {
+        if (where == 1) {
             wavelength_a <- datatable[row_position:(row_position + 1),2:13] # Rows A-B
         }
-        if (where = 2) {
+        if (where == 2) {
             wavelength_a <- datatable[(row_position + 2):(row_position + 3),2:13] # Rows C-D
         }
-        if (where = 3) {
+        if (where == 3) {
             wavelength_a <- datatable[(row_position + 4):(row_position + 5),2:13] # Rows E-F
         }
         datalist_a[[i]] <- as.numeric(as.matrix(wavelength_a))
@@ -44,13 +44,13 @@ CalculateBret <- function(datatable, a_rows, b_rows, where) {
     datalist_b <- list()
     for (i in 1:n_cycles) {
         row_position <- b_rows[i]
-        if (where = 1) {
+        if (where == 1) {
             wavelength_b <- datatable[row_position:(row_position + 1),2:13] # Rows A-B
         }
-        if (where = 2) {
+        if (where == 2) {
             wavelength_b <- datatable[(row_position + 2):(row_position + 3),2:13] # Rows C-D
         }
-        if (where = 3) {
+        if (where == 3) {
             wavelength_b <- datatable[(row_position + 4):(row_position + 5),2:13] # Rows E-F
         }
         datalist_b[[i]] <- as.numeric(as.matrix(wavelength_b))
@@ -72,6 +72,6 @@ ExportExcel <- function(calculated_bret_values, savepath) {
 }
 path <- GetFilepath()
 data <- ParseExcel(path)
-where <- readline(prompt = "Which duplicate?: ")
+where <- as.numeric(readline(prompt = "Which duplicate?: "))
 processed_data <- CalculateBret(data, FindRows(data, "A"), FindRows(data, "B"), where = where)
 ExportExcel(processed_data, path)
